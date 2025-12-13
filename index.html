@@ -22,6 +22,8 @@
             --particle-color: 255, 255, 255;
             --font-main: 'Outfit', sans-serif;
             --card-size: 100px;
+            --grid-gap: 25px;
+            --container-padding: 30px;
         }
 
         body.light-mode {
@@ -76,10 +78,14 @@
             align-items: center;
             justify-content: flex-start;
             padding-top: max(5vh, 40px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
         }
 
         .header {
             width: 100%;
+            max-width: 1200px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -91,17 +97,18 @@
         }
 
         .greeting {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: clamp(1.5rem, 5vw, 3rem);
             font-weight: 700;
             letter-spacing: -0.5px;
             background: linear-gradient(180deg, var(--text-color), rgba(128,128,128,0.5));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
+            margin-top: 10px;
         }
 
         .theme-toggle {
-            position: fixed;
+            position: absolute;
             top: 20px;
             right: 20px;
             width: 45px;
@@ -162,7 +169,7 @@
             box-shadow: 0 8px 30px var(--shadow-color);
         }
 
-        .category-scroll-container {
+        .category-nav-container {
             width: 100%;
             max-width: 800px;
             padding: 10px 20px;
@@ -170,38 +177,39 @@
             z-index: 20;
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
+            flex-shrink: 0;
         }
 
-        .category-pill {
+        .nav-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 8px 20px;
+            padding: 10px 30px;
             border-radius: 20px;
             background: var(--category-bg);
             color: var(--category-text);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(5px);
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             flex-shrink: 0;
+            min-width: 100px;
         }
 
-        .category-pill:hover {
+        .nav-btn:hover {
             transform: translateY(-2px);
             background: rgba(128,128,128,0.2);
             color: var(--text-color);
         }
         
-        .category-pill:active {
+        .nav-btn:active {
             transform: scale(0.95);
         }
 
-        .category-pill.active {
+        .nav-btn.active {
             background: var(--category-active);
             color: var(--category-text-active);
             box-shadow: 0 5px 15px var(--shadow-color);
@@ -212,23 +220,16 @@
         .app-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
-            gap: 25px; 
+            gap: var(--grid-gap); 
             width: 100%; 
             max-width: 1200px;
-            padding: 20px 30px 120px 30px; 
+            padding: 20px var(--container-padding) 120px var(--container-padding); 
             perspective: 1000px;
-            /* Scroll fix: Ensure it takes available space and scrolls */
-            flex-grow: 1; 
-            overflow-y: auto; 
-            min-height: 0; /* Crucial for flex child scrolling */
+            flex-shrink: 0;
+            overflow: visible; 
+            min-height: 0;
             justify-content: center; 
             align-content: start;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .app-grid::-webkit-scrollbar { 
-            display: none; 
         }
 
         .app-card {
@@ -250,7 +251,7 @@
         .icon-container {
             width: var(--card-size);
             height: var(--card-size);
-            border-radius: 24px;
+            border-radius: 22px;
             position: relative;
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -269,7 +270,7 @@
             position: absolute;
             height: 100%;
             width: 100%;
-            border-radius: 24px;
+            border-radius: 22px;
             background: radial-gradient(
                 300px circle at var(--mouse-x) var(--mouse-y),
                 rgba(255, 255, 255, 0.15),
@@ -333,12 +334,10 @@
             color: var(--text-color);
             text-align: center;
             width: 100%;
-            /* Ensure fallback is visible */
             display: none; 
             text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        /* --- Modal Styles --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -377,6 +376,12 @@
             transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
+        .modal-content.small-modal {
+            max-width: 500px;
+            height: auto;
+            max-height: 80vh;
+        }
+
         .modal-overlay.active .modal-content {
             transform: scale(1);
         }
@@ -389,6 +394,29 @@
             padding-bottom: 15px;
             border-bottom: 1px solid var(--glass-border);
             flex-shrink: 0;
+        }
+
+        .modal-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         .modal-title {
@@ -417,7 +445,6 @@
             transform: rotate(90deg);
         }
 
-        /* Modal specific grid adjustments */
         .modal-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -430,6 +457,40 @@
         
         .modal-grid::-webkit-scrollbar {
             display: none;
+        }
+
+        .category-list-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 25px;
+            background: var(--category-bg);
+            color: var(--category-text);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .category-pill:hover {
+            transform: translateY(-2px);
+            background: rgba(128,128,128,0.2);
+            color: var(--text-color);
+        }
+        
+        .category-pill:active {
+            transform: scale(0.95);
         }
 
         @keyframes popIn {
@@ -465,22 +526,48 @@
             opacity: 1;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             :root {
-                --card-size: 80px;
+                --card-size: 90px;
+                --grid-gap: 20px;
+                --container-padding: 20px;
             }
-            .app-grid, .modal-grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-                gap: 15px;
-                padding: 10px 15px 100px 15px;
-            }
-            .category-scroll-container {
-                padding: 10px 15px;
+            .app-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
             .modal-content {
                 width: 95%;
                 height: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --card-size: 80px;
+                --grid-gap: 15px;
+                --container-padding: 15px;
+            }
+            .app-grid, .modal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                padding: 10px 15px 100px 15px;
+            }
+            .category-nav-container {
+                padding: 10px 15px;
+            }
+            .modal-content {
                 padding: 20px;
+            }
+            .modal-content.small-modal {
+                width: 90%;
+                height: auto;
+            }
+            .greeting {
+                font-size: 2rem;
+            }
+            .nav-btn {
+                padding: 8px 20px;
+                min-width: 80px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -491,24 +578,38 @@
 
     <div class="warp-overlay" id="warpOverlay"></div>
 
-    <!-- Category Modal -->
-    <div class="modal-overlay" id="categoryModal">
+    <div class="modal-overlay" id="appModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Category</h2>
-                <button class="close-btn" id="closeModal">&times;</button>
+                <div class="modal-title-container">
+                    <button class="back-btn" id="backToCategories">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <h2 class="modal-title" id="appModalTitle">Category</h2>
+                </div>
+                <button class="close-btn" id="closeAppModal">&times;</button>
             </div>
             <div class="modal-grid" id="modalAppGrid">
-                <!-- Modal apps will be rendered here -->
             </div>
         </div>
     </div>
 
-    <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
-        <i data-lucide="sun"></i>
+    <div class="modal-overlay" id="categorySelectionModal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Select Category</h2>
+                <button class="close-btn" id="closeCategoryModal">&times;</button>
+            </div>
+            <div class="category-list-grid" id="categoryListContainer">
+            </div>
+        </div>
     </div>
 
     <div class="ui-layer">
+        <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <i data-lucide="sun"></i>
+        </div>
+
         <div class="header">
             <div class="greeting" id="greetingDisplay">Loading...</div>
             <div class="search-container">
@@ -516,7 +617,9 @@
             </div>
         </div>
 
-        <div class="category-scroll-container" id="categoryContainer">
+        <div class="category-nav-container" id="mainCategoryNav">
+            <div class="nav-btn active" id="btnAll">All</div>
+            <div class="nav-btn" id="btnCategories">Categories</div>
         </div>
 
         <div class="app-grid" id="appGrid">
@@ -587,7 +690,6 @@
         let currentCategory = 'All';
         let isLightMode = false;
 
-        // Safety check for Lucide library
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
@@ -599,29 +701,32 @@
                 isLightMode = !isLightMode;
                 document.body.classList.toggle('light-mode');
                 
-                // Safe icon update
                 if (typeof lucide !== 'undefined') {
                     themeToggleBtn.innerHTML = `<i data-lucide="${isLightMode ? 'moon' : 'sun'}"></i>`;
                     lucide.createIcons();
                 } else {
-                    // Fallback if icons fail to load
                     themeToggleBtn.innerHTML = isLightMode ? '&#9789;' : '&#9728;';
                 }
             });
         }
 
-        const categoryContainer = document.getElementById('categoryContainer');
-        const modalOverlay = document.getElementById('categoryModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalGrid = document.getElementById('modalAppGrid');
-        const closeModalBtn = document.getElementById('closeModal');
+        const appModalOverlay = document.getElementById('appModal');
+        const appModalTitle = document.getElementById('appModalTitle');
+        const modalAppGrid = document.getElementById('modalAppGrid');
+        const closeAppModalBtn = document.getElementById('closeAppModal');
+        const backToCategoriesBtn = document.getElementById('backToCategories');
+        
+        const categorySelectionModal = document.getElementById('categorySelectionModal');
+        const categoryListContainer = document.getElementById('categoryListContainer');
+        const closeCategoryModalBtn = document.getElementById('closeCategoryModal');
+
+        const btnAll = document.getElementById('btnAll');
+        const btnCategories = document.getElementById('btnCategories');
         const mainGrid = document.getElementById('appGrid');
 
-        // Robust Category Extraction
-        const allCategories = new Set(['All']);
+        const allCategories = new Set();
         if (Array.isArray(apps)) {
             apps.forEach(app => {
-                // Check if app and category exist before splitting
                 if (app && app.category) {
                     const cats = app.category.split(',').map(c => c.trim());
                     cats.forEach(c => allCategories.add(c));
@@ -629,62 +734,70 @@
             });
         }
 
-        function renderCategories() {
-            if (!categoryContainer) return;
-            categoryContainer.innerHTML = '';
-            allCategories.forEach(cat => {
+        function populateCategoryListModal() {
+            categoryListContainer.innerHTML = '';
+            const catsArray = Array.from(allCategories).sort();
+            
+            catsArray.forEach(cat => {
+                if (cat === 'All') return; 
+
                 const pill = document.createElement('div');
-                pill.className = `category-pill ${cat === currentCategory ? 'active' : ''}`;
+                pill.className = 'category-pill';
                 pill.textContent = cat;
                 
                 pill.addEventListener('click', () => {
-                    // Logic Update:
-                    // If 'All' is clicked -> Show all apps in main grid, hide modal.
-                    // If specific category -> Open modal, don't change main grid (or keep 'All' there).
-                    
-                    if (cat === 'All') {
-                        currentCategory = 'All';
-                        closeModal();
-                        renderApps(mainGrid, document.getElementById('searchInput').value, 'All');
-                        updateActivePill('All');
-                    } else {
-                        // Open Modal for this category
-                        openCategoryModal(cat);
-                    }
+                    closeCategorySelectionModal();
+                    openAppModal(cat);
                 });
-                categoryContainer.appendChild(pill);
+                categoryListContainer.appendChild(pill);
             });
         }
 
-        function updateActivePill(activeCat) {
-             const pills = document.querySelectorAll('.category-pill');
-             pills.forEach(p => {
-                 if (p.textContent === activeCat) p.classList.add('active');
-                 else p.classList.remove('active');
-             });
+        btnAll.addEventListener('click', () => {
+            currentCategory = 'All';
+            btnAll.classList.add('active');
+            btnCategories.classList.remove('active');
+            renderApps(mainGrid, document.getElementById('searchInput').value, 'All');
+        });
+
+        btnCategories.addEventListener('click', () => {
+            openCategorySelectionModal();
+        });
+
+        function openCategorySelectionModal() {
+            populateCategoryListModal();
+            categorySelectionModal.classList.add('active');
         }
 
-        function openCategoryModal(category) {
-            modalTitle.textContent = category;
-            modalOverlay.classList.add('active');
-            // Render specific category apps into modal grid
-            renderApps(modalGrid, '', category);
+        function closeCategorySelectionModal() {
+            categorySelectionModal.classList.remove('active');
         }
 
-        function closeModal() {
-            modalOverlay.classList.remove('active');
+        function openAppModal(category) {
+            appModalTitle.textContent = category;
+            appModalOverlay.classList.add('active');
+            renderApps(modalAppGrid, '', category);
         }
 
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', closeModal);
+        function closeAppModal() {
+            appModalOverlay.classList.remove('active');
         }
+
+        if (closeAppModalBtn) closeAppModalBtn.addEventListener('click', closeAppModal);
+        if (closeCategoryModalBtn) closeCategoryModalBtn.addEventListener('click', closeCategorySelectionModal);
         
-        // Close modal on click outside
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeModal();
+        if (backToCategoriesBtn) {
+            backToCategoriesBtn.addEventListener('click', () => {
+                closeAppModal();
+                openCategorySelectionModal();
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === appModalOverlay) closeAppModal();
+            if (e.target === categorySelectionModal) closeCategorySelectionModal();
         });
         
-        // Global handler for image errors to ensure fallbacks show
         window.handleImageError = function(img) {
             img.style.display = 'none';
             if (img.nextElementSibling && img.nextElementSibling.classList.contains('fallback')) {
@@ -719,12 +832,10 @@
                 card.style.animation = `popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards ${delay}s`;
                 card.style.opacity = '0'; 
                 
-                // Fallbacks for display
                 const appName = app.name || 'App';
                 const appIcon = app.icon || '';
                 const appId = app.id || `temp-id-${index}`;
                 
-                // Using global handler for robustness
                 const imgContent = `<img src="${appIcon}" class="app-icon" onerror="handleImageError(this)">
                                     <div class="fallback">${appName.substring(0,2).toUpperCase()}</div>`;
 
@@ -787,10 +898,7 @@
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
-                // Search always filters the main grid, and if modal is open, filters modal too (optional, but good UX)
                 renderApps(mainGrid, e.target.value, 'All');
-                // If modal is active, search inside modal? 
-                // Currently just refreshing main grid.
             });
         }
 
@@ -910,8 +1018,6 @@
             animate();
         }
 
-        renderCategories();
-        // Initial render of all apps in main grid
         renderApps(mainGrid, '', 'All');
         
     </script>
